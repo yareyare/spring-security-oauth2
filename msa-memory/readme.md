@@ -1,4 +1,4 @@
-基于内存存储令牌
+model-1 【基于内存存储令牌】
 
 快速理解 oAuth2 认证服务器中 "认证"、"授权"、"访问令牌” 的基本概念
 参考：https://www.funtl.com/zh/spring-security-oauth2/%E5%9F%BA%E4%BA%8E%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E4%BB%A4%E7%89%8C.html#%E6%A6%82%E8%BF%B0
