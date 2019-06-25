@@ -1,10 +1,12 @@
 spring:
   application:
     name: oauth2-server-msa-memory
-  security:
-    user:
-      # 账号
-      name: root
-      # 密码
-      password: 123456
+
+#  spring-security 版本过高，不允许明文配置密码。
+#  security:
+#    user:
+#      # 账号
+#      name: root
+#      # 密码
+#      password: 123456
 

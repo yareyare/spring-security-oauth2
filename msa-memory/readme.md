@@ -56,5 +56,86 @@ application.yml 配置
     浏览器地址上还会包含一个授权码（code=J9ECnU），浏览器地址栏会显示如下地址：https://github.com/yareyare?code=J9ECnU
     有了这个授权码就可以获取访问令牌了
 
-#
+#通过授权码向服务器申请令牌
+    通过 CURL 或是 Postman 请求：curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'grant_type=authorization_code&code=J9ECnU' "http://client:secret@localhost:8080/oauth/token"
 
+
+
+# 附录：
+Exception：There is no PasswordEncoder mapped for the id "null"
+解决方案：Spring Security 5.0 之前版本的 PasswordEncoder 接口默认实现为 NoOpPasswordEncoder 此时是可以使用明文密码的，在 5.0 之后默认实现类改为 DelegatingPasswordEncoder 此时密码必须以加密形式存储
+
+application.yml
+删除：spring.security 相关配置，修改为：
+spring:
+  application:
+    name: oauth2-server
+server:
+  port: 8080
+
+
+WebSecurityConfiguration
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+@Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
+public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        // 设置默认的加密方式
+        return new BCryptPasswordEncoder();
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
+        auth.inMemoryAuthentication()
+                // 在内存中创建用户并为密码加密
+                .withUser("user").password(passwordEncoder().encode("123456")).roles("USER")
+                .and()
+                .withUser("admin").password(passwordEncoder().encode("123456")).roles("ADMIN");
+
+    }
+}
+
+
+AuthorizationServerConfiguration
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
+import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
+
+@Configuration
+@EnableAuthorizationServer
+public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
+
+    // 注入 WebSecurityConfiguration 中配置的 BCryptPasswordEncoder
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    @Override
+    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+        clients
+                .inMemory()
+                .withClient("client")
+                // 还需要为 secret 加密
+                .secret(passwordEncoder.encode("secret"))
+                .authorizedGrantTypes("authorization_code")
+                .scopes("app")
+                .redirectUris("http://www.funtl.com");
+
+    }
+}
+
+通过CURL 请求：curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'grant_type=authorization_code&code=J9ECnU' "http://client:secret@localhost:8080/oauth/token"
