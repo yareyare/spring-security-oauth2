@@ -1,7 +1,9 @@
 model-2 【基于JDBC存储令牌】
+client 存放到数据库
+Token 存放到数据库
 
 --------------------------------------------------------------------------------
-进入地址：http://localhost:8080/oauth/authorize?client_id=client&response_type=code
+进入地址：http://localhost:8080/oauth/authorize?client_id=msa&response_type=code
 --------------------------------------------------------------------------------
 
 1.建表
