@@ -26,3 +26,5 @@ hs_err_pid*
 *.iml
 
 msa-memory/target/
+msa-jdbc/target/
+msa-rbac/target/
