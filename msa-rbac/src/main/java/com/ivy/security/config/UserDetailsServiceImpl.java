@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.ivy.security.service.impl;
+package com.ivy.security.config;
 
 import com.ivy.security.domain.TbPermission;
 import com.ivy.security.domain.TbUser;

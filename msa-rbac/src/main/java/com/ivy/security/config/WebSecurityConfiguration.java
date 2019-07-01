@@ -17,7 +17,7 @@
 package com.ivy.security.config;
 
 
-import com.ivy.security.service.impl.UserDetailsServiceImpl;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -36,6 +36,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  * @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
  */
 
+@Log4j2
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
@@ -57,7 +58,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                .withUser("admin").password(passwordEncoder().encode("123456")).roles("ADMIN");
 
         //使用自定义认证与授权
-        auth.userDetailsService(userDetailsService());
+        if (userDetailsService()!=null){
+            auth.userDetailsService(userDetailsService());
+        }else{
+            log.warn("userDetailsService 为空！");
+        }
 
     }
 
@@ -67,13 +72,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new UserDetailsServiceImpl();
     }
 
-
-
-
     @Override
     public void configure(WebSecurity web) throws Exception {
         // 将 check_token 暴露出去，否则资源服务器访问时报 403 错误
         web.ignoring().antMatchers("/oauth/check_token")
-        .antMatchers("/oauth/token");
+        .antMatchers("/oauth/token")
+        .antMatchers("/oauth/authorize");
+
     }
 }

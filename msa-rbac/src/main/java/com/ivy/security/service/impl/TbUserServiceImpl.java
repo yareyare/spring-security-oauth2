@@ -21,6 +21,8 @@ import com.ivy.security.service.TbUserService;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import com.ivy.security.mapper.TbUserMapper;
+import tk.mybatis.mapper.entity.Example;
+
 @Service
 public class TbUserServiceImpl implements TbUserService {
 
@@ -30,6 +32,8 @@ public class TbUserServiceImpl implements TbUserService {
 
     @Override
     public TbUser getByUsername(String username) {
-        return tbUserMapper.selectByUserName(username);
+        Example example = new Example(TbUser.class);
+        example.createCriteria().andEqualTo("username", username);
+        return tbUserMapper.selectOneByExample(example);
     }
 }

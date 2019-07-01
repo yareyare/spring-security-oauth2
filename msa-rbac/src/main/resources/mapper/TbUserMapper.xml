@@ -15,7 +15,4 @@
     <!--@mbg.generated generated on Thu Jun 27 14:15:52 CST 2019.-->
     id, username, `password`, phone, email, created, updated
   </sql>
-    <select id="selectByUserName" resultMap="BaseResultMap">
-      select * from tb_user where username = #{username}
-    </select>
 </mapper>
