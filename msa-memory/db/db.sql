@@ -1,3 +1,5 @@
+-- 参考官方
+
 create schema if not exists msa_jdbc collate utf8mb4_unicode_ci;
 
 create table if not exists clientdetails
