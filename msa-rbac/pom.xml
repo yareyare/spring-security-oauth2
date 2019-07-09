@@ -10,8 +10,8 @@
     <name>msa-rbac</name>
 
     <parent>
-        <groupId>com.ivy.spring-security-oauth2</groupId>
-        <artifactId>parent</artifactId>
+        <groupId>com.ivy.security</groupId>
+        <artifactId>spring-security-oauth2</artifactId>
         <version>1.0-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
